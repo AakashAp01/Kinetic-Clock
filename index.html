@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive 3D Kinetic Clock Dashboard featuring a stopwatch, timer, and mechanical sweeping animations.">
+    <meta name="author" content="AkashAp">
+    
+    <meta property="og:title" content="Kinetic Clock By AkashAp">
+    <meta property="og:description" content="Interactive 3D Kinetic Clock Dashboard featuring a stopwatch, timer, and mechanical sweeping animations.">
+    <meta property="og:image" content="og-image.webp">
+    <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kinetic Clock By AkashAp">
+    <meta name="twitter:description" content="Interactive 3D Kinetic Clock Dashboard featuring a stopwatch, timer, and mechanical sweeping animations.">
+    <meta name="twitter:image" content="og-image.webp">
+
+    <title>Kinetic Clock By AkashAp</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="wrapper">
+        <div class="clock-chassis">
+            <div class="kinetic-grid" id="grid"></div>
+        </div>
+    </div>
+
+    <div class="bottom-console">
+        <div class="tabs">
+            <div class="tab active" data-mode="CLOCK">Clock</div>
+            <div class="tab" data-mode="SW">Stopwatch</div>
+            <div class="tab" data-mode="TIMER">Timer</div>
+        </div>
+
+        <div id="panel-CLOCK" class="panel active">
+            <button id="btn-format">Format: <span id="format-label">24H</span></button>
+            <button class="btn-accent" id="btn-chaos">⟳ Force Chaos Wave</button>
+        </div>
+
+        <div id="panel-SW" class="panel">
+            <button class="btn-accent" id="btn-sw-start">Start / Stop</button>
+            <button id="btn-sw-reset">Reset</button>
+        </div>
+
+        <div id="panel-TIMER" class="panel">
+            <button id="btn-tm-sub">-1 Min</button>
+            <button id="btn-tm-add">+1 Min</button>
+            <button class="btn-accent" id="btn-tm-start">Start / Stop</button>
+            <button id="btn-tm-reset">Reset</button>
+        </div>
+
+        <div class="footer-credits">
+            <div class="made-by">
+                Made with <i class="fas fa-heart heart-icon"></i> by <a href="https://www.linkedin.com/in/aakashap/" target="_blank">AkashAp</a>
+            </div>
+
+            <div class="github-links">
+                <a href="https://github.com/AakashAp01/Kinetic-Clock" target="_blank" class="gh-btn">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://github.com/AakashAp01/Kinetic-Clock" target="_blank" class="gh-btn">
+                    <i class="fas fa-star"></i> Star <span class="count">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
