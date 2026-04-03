@@ -154,7 +154,7 @@ document.addEventListener('mouseleave', () => {
 });
 
 /* ═══════════════════════════════════════════════════════
-   GRID INIT — 3 SPOKE CELLS
+   GRID INIT — SPOKE CELLS
 ═══════════════════════════════════════════════════════ */
 function initGrid() {
     for (let i = 0; i < 55; i++) {
@@ -232,10 +232,8 @@ function showToast(msg) {
     el.textContent = msg;
     el.classList.add('show');
     if (toastTimeout) clearTimeout(toastTimeout);
-    toastTimeout = setTimeout(() => el.classList.remove('show'), 2200);
+    toastTimeout = setTimeout(() => el.classList.remove('show'), 2500);
 }
-
-
 
 /* ═══════════════════════════════════════════════════════
    MASTER TICKER
@@ -339,8 +337,8 @@ function onTimerEnd() {
     document.body.style.background = 'radial-gradient(circle at 50% 30%, #7f1d1d 0%, #020617 100%)';
     setTimeout(() => {
         document.body.style.background = '';
-        setTimeout(() => { document.body.style.transition = ''; }, 500);
-    }, 600);
+        setTimeout(() => { document.body.style.transition = ''; }, 1000);
+    }, 2000);
     triggerSweepAnimation();
 }
 
