@@ -80,6 +80,43 @@ const DIGITS = {
 };
 
 /* ═══════════════════════════════════════════════════════
+   LOCAL STORAGE HELPERS
+═══════════════════════════════════════════════════════ */
+const LS_KEY = 'kineticClock_v1';
+
+function saveState() {
+    const state = {
+        mode,
+        is24Hour,
+        isDark,
+        swElapsed,
+        swRunning: false,
+        laps,
+        swLastLapTime,
+        tmTotal,
+        tmRemaining,
+        tmRunning: false
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function loadState() {
+    try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return;
+        const s = JSON.parse(raw);
+        if (s.mode !== undefined)         mode          = s.mode;
+        if (s.is24Hour !== undefined)     is24Hour      = s.is24Hour;
+        if (s.isDark !== undefined)       isDark        = s.isDark;
+        if (s.swElapsed !== undefined)    swElapsed     = s.swElapsed;
+        if (Array.isArray(s.laps))        laps          = s.laps;
+        if (s.swLastLapTime !== undefined) swLastLapTime = s.swLastLapTime;
+        if (s.tmTotal !== undefined)      tmTotal       = s.tmTotal;
+        if (s.tmRemaining !== undefined)  tmRemaining   = s.tmRemaining;
+    } catch(e) {}
+}
+
+/* ═══════════════════════════════════════════════════════
    APP STATE
 ═══════════════════════════════════════════════════════ */
 const gridEl = document.getElementById('grid');
@@ -100,6 +137,8 @@ let swLastLapTime = 0;
 let tmTotal = 0;
 let tmRemaining = 0;
 let tmRunning = false;
+
+loadState();
 
 /* ═══════════════════════════════════════════════════════
    MOUSE PARALLAX (3D TILT EFFECT)
@@ -373,6 +412,7 @@ function toggleTheme() {
     const icon = document.getElementById('theme-icon');
     icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
     showToast(isDark ? '🌙 Dark mode' : '☀️ Light mode');
+    saveState();
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -421,6 +461,7 @@ function recordLap() {
     laps.unshift({ n: laps.length + 1, t: lapTime, abs: swElapsed });
     renderLaps();
     showToast(`Lap ${laps.length} — ${fmtMS(lapTime)}`);
+    saveState();
 }
 
 function renderLaps() {
@@ -481,6 +522,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 
         updateTimerRing();
         masterTick();
+        saveState();
     });
 });
 
@@ -488,12 +530,14 @@ document.getElementById('btn-format').addEventListener('click', () => {
     is24Hour = !is24Hour;
     document.getElementById('format-label').textContent = is24Hour ? '24H' : '12H';
     masterTick();
+    saveState();
 });
 document.getElementById('btn-chaos').addEventListener('click', triggerChaos);
 document.getElementById('btn-sweep').addEventListener('click', triggerSweepAnimation);
 
 document.getElementById('btn-sw-start').addEventListener('click', () => {
     swRunning = !swRunning;
+    saveState();
 });
 document.getElementById('btn-sw-lap').addEventListener('click', recordLap);
 document.getElementById('btn-sw-reset').addEventListener('click', () => {
@@ -501,16 +545,18 @@ document.getElementById('btn-sw-reset').addEventListener('click', () => {
     swElapsed = 0;
     resetLaps();
     masterTick();
+    saveState();
 });
 
-document.getElementById('btn-tm-sub5').addEventListener('click', () => { tmRemaining = Math.max(0, tmRemaining - 300); tmTotal = Math.max(tmTotal, tmRemaining); masterTick(); });
-document.getElementById('btn-tm-sub').addEventListener('click', () => { tmRemaining = Math.max(0, tmRemaining - 60); masterTick(); });
-document.getElementById('btn-tm-add').addEventListener('click', () => { tmRemaining = Math.min(5999, tmRemaining + 60); tmTotal = tmRemaining; masterTick(); });
-document.getElementById('btn-tm-add5').addEventListener('click', () => { tmRemaining = Math.min(5999, tmRemaining + 300); tmTotal = tmRemaining; masterTick(); });
+document.getElementById('btn-tm-sub5').addEventListener('click', () => { tmRemaining = Math.max(0, tmRemaining - 300); tmTotal = Math.max(tmTotal, tmRemaining); masterTick(); saveState(); });
+document.getElementById('btn-tm-sub').addEventListener('click', () => { tmRemaining = Math.max(0, tmRemaining - 60); masterTick(); saveState(); });
+document.getElementById('btn-tm-add').addEventListener('click', () => { tmRemaining = Math.min(5999, tmRemaining + 60); tmTotal = tmRemaining; masterTick(); saveState(); });
+document.getElementById('btn-tm-add5').addEventListener('click', () => { tmRemaining = Math.min(5999, tmRemaining + 300); tmTotal = tmRemaining; masterTick(); saveState(); });
 document.getElementById('btn-tm-start').addEventListener('click', () => {
     if (tmRemaining === 0) { showToast('Set a time first!'); return; }
     tmRunning = !tmRunning;
     updateTimerRing();
+    saveState();
 });
 document.getElementById('btn-tm-reset').addEventListener('click', () => {
     tmRunning = false;
@@ -518,6 +564,7 @@ document.getElementById('btn-tm-reset').addEventListener('click', () => {
     tmTotal = 0;
     updateTimerRing();
     masterTick();
+    saveState();
 });
 
 document.getElementById('btn-theme').addEventListener('click', toggleTheme);
@@ -559,8 +606,26 @@ document.addEventListener('keydown', (e) => {
 })();
 
 /* ═══════════════════════════════════════════════════════
-   BOOT
+   BOOT — Apply persisted state to UI
 ═══════════════════════════════════════════════════════ */
+(function applyPersistedState() {
+
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    document.getElementById('theme-icon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+    document.getElementById('format-label').textContent = is24Hour ? '24H' : '12H';
+
+    document.querySelectorAll('.tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.mode === mode);
+    });
+
+    document.querySelectorAll('.panel').forEach(p => {
+        p.classList.toggle('active', p.id === `panel-${mode}`);
+    });
+
+    if (mode === 'SW') renderLaps();
+})();
+
 initGrid();
+setInterval(saveState, 5000);
 setTimeout(masterTick, 100);
 setInterval(masterTick, 1000);
