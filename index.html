@@ -1,27 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Interactive 3D Kinetic Clock Dashboard featuring a stopwatch, timer, and mechanical sweeping animations.">
     <meta name="author" content="AkashAp">
-    
+
     <meta property="og:title" content="Kinetic Clock By AkashAp">
     <meta property="og:description" content="Interactive 3D Kinetic Clock Dashboard featuring a stopwatch, timer, and mechanical sweeping animations.">
     <meta property="og:image" content="og-image.webp">
     <meta property="og:type" content="website">
-    
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kinetic Clock By AkashAp">
     <meta name="twitter:description" content="Interactive 3D Kinetic Clock Dashboard featuring a stopwatch, timer, and mechanical sweeping animations.">
     <meta name="twitter:image" content="og-image.webp">
 
     <title>Kinetic Clock By AkashAp</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div class="floating-controls">
+        <button class="fab" id="btn-theme" title="Toggle Light/Dark Mode">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+        <button class="fab" id="btn-fullscreen" title="Toggle Fullscreen">
+            <i class="fas fa-expand" id="fs-icon"></i>
+        </button>
+    </div>
+
+    <div id="toast" class="toast"></div>
 
     <div id="wrapper">
         <div class="clock-chassis">
@@ -29,29 +40,36 @@
         </div>
     </div>
 
+
     <div class="bottom-console">
         <div class="tabs">
-            <div class="tab active" data-mode="CLOCK">Clock</div>
-            <div class="tab" data-mode="SW">Stopwatch</div>
-            <div class="tab" data-mode="TIMER">Timer</div>
+            <div class="tab active" data-mode="CLOCK"><i class="fas fa-clock"></i> Clock</div>
+            <div class="tab" data-mode="SW"><i class="fas fa-stopwatch"></i> Stopwatch</div>
+            <div class="tab" data-mode="TIMER"><i class="fas fa-hourglass-half"></i> Timer</div>
         </div>
 
         <div id="panel-CLOCK" class="panel active">
             <button id="btn-format">Format: <span id="format-label">24H</span></button>
-            <button class="btn-accent" id="btn-chaos">⟳ Force Chaos Wave</button>
+            <button class="btn-accent" id="btn-chaos">⟳ Chaos Wave</button>
+            <button id="btn-sweep" title="Trigger sweep animation">⌘ Sweep</button>
         </div>
 
         <div id="panel-SW" class="panel">
-            <button class="btn-accent" id="btn-sw-start">Start / Stop</button>
-            <button id="btn-sw-reset">Reset</button>
+            <button class="btn-accent" id="btn-sw-start"><i class="fas fa-play"></i> <span id="sw-start-label">Start</span></button>
+            <button id="btn-sw-lap"><i class="fas fa-flag"></i> Lap</button>
+            <button id="btn-sw-reset"><i class="fas fa-redo"></i> Reset</button>
         </div>
 
         <div id="panel-TIMER" class="panel">
+            <button id="btn-tm-sub5">-5 Min</button>
             <button id="btn-tm-sub">-1 Min</button>
             <button id="btn-tm-add">+1 Min</button>
-            <button class="btn-accent" id="btn-tm-start">Start / Stop</button>
-            <button id="btn-tm-reset">Reset</button>
+            <button id="btn-tm-add5">+5 Min</button>
+            <button class="btn-accent" id="btn-tm-start"><i class="fas fa-play"></i> <span id="tm-start-label">Start</span></button>
+            <button id="btn-tm-reset"><i class="fas fa-redo"></i> Reset</button>
         </div>
+
+        <div id="lap-list" class="lap-list"></div>
 
         <div class="footer-credits">
             <div class="made-by">
